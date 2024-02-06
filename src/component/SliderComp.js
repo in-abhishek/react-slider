@@ -22,7 +22,6 @@ const SliderComp = () => {
             console.log(error);
         }
     }
-    console.log("data->>", data);
     const settings = {
         infinite: true,
         slidesToShow: 3,
@@ -30,25 +29,29 @@ const SliderComp = () => {
         lazyLoad: true,
     };
     const handleLoadNext = () => {
-        setSHowNext(!showNext);
         setItems(Item + 1);
         setApiData(apiData + 5);
         setListItems(listItems + 1);
+        if(listItems > data.length){
+            setItems(0);
+            setListItems(3);
+        }
     }
     const handleLoadPrev = () => {
         setSHowNext(showNext);
         setItems(Item - 1);
         setListItems(listItems - 1);
+        
     }
     useEffect(() => {
         getData();
     }, [Item, listItems]);
-    console.log("Item->>>", Item, "data.length->>>", data.length);
+    console.log("listItems->>>", listItems, "data.length->>>", data.length);
     return (
         <div className="parent">
             {Item === 0 ? <button type="button" className="showLess" onClick={handleLoadPrev} disabled>Previous</button> : <button type="button" className="showLess" onClick={handleLoadPrev}>Previous</button>}
             {
-                Item < data.length ?
+                listItems < data.length ?
                     <Slider {...settings} className={setSHowNext ? `slider-parent show` : `slider-parent`}>
                         {
                             data.slice(Item, listItems).map((singleData, key) => {
@@ -67,9 +70,9 @@ const SliderComp = () => {
                                 )
                             })
                         }
-                    </Slider> : <Slider {...settings} className={setSHowNext ? `slider-parent show` : `slider-parent`}>
+                    </Slider> :  <Slider {...settings} className={setSHowNext ? `slider-parent show` : `slider-parent`}>
                         {
-                            data.slice(data.length - 2, data.length).map((singleData, key) => {
+                            data.slice(Item, listItems).map((singleData, key) => {
                                 return (
                                     <div className="singleContainer" key={key}>
                                         <div className="card-container">
